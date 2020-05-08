@@ -1,0 +1,23 @@
+{
+  "name": "falfox-discord",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "watch": "nodemon app.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@discordjs/opus": "^0.3.2",
+    "axios": "^0.19.2",
+    "byte-size": "^6.2.0",
+    "discord.js": "^12.2.0",
+    "dotenv": "^8.2.0"
+  },
+  "devDependencies": {
+    "@prisma/cli": "^2.0.0-beta.4",
+    "nodemon": "^2.0.3"
+  }
+}
