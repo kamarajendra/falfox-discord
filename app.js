@@ -158,6 +158,19 @@ client.on("message", async (message) => {
     if (connection) {
       connection.disconnect();
     }
+  } else if (command === "playsound") {
+    const [sound] = args;
+    const url = `https://admiralbullbot.github.io/playsounds/files/bulldog/${sound}.ogg`;
+    const connection = message.guild.voice && message.guild.voice.connection;
+
+    if (connection) {
+      connection.play(url, {
+        volume: 0.7,
+      });
+    } else {
+      const voiceConnection = await message.member.voice.channel.join();
+      voiceConnection.play(url);
+    }
   } else if (command === "trump") {
     const url =
       "http://api.trumped.com/speak?v=trump&vol=3&s=" +
