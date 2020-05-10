@@ -3,6 +3,8 @@ const byteSize = require("byte-size");
 const axios = require("axios");
 const Discord = require("discord.js");
 const client = new Discord.Client();
+const frankerfacez = require("./lib/frankerfacez");
+const bttv = require("./lib/betterttv");
 
 const vultrAPIKey = process.env.VULTR_APIKEY;
 
@@ -29,8 +31,83 @@ client.on("message", async (message) => {
 
   const args = message.content.slice(prefix.length).split(" ");
   const command = args.shift().toLowerCase();
+  const channel = message.channel;
 
-  if (command === "ping") {
+  if (command === "emoji") {
+    const [subcommand, ...params] = args;
+
+    if (!subcommand) {
+      const embed = new Discord.MessageEmbed()
+        .setDescription("Add or remove emoji from FrankerFaceZ or BetterTTV")
+        .setTitle(".emoji")
+        .addField(
+          "How to use",
+          `format: \`.emoji [add|remove] <url>\`. Example: \`\`\`.emoji add https://www.frankerfacez.com/emoticon/381875-KEKW\`\`\``
+        );
+      channel.send(embed);
+    } else if (subcommand == "add") {
+      if (!params[0]) {
+        channel.send(
+          "Missing url parameter, example: ```Format: .emoji add <url>\nExample: .emoji add https://www.frankerfacez.com/emoticon/381875-KEKW```"
+        );
+      } else {
+        try {
+          const [url] = params;
+          const emoji = {
+            url: null,
+            name: null,
+          };
+
+          if (url.includes("frankerfacez.com")) {
+            const emote = await frankerfacez.getEmoteByURL(url);
+            const urls = Object.keys(emote.urls);
+            emoji.url = `https:${emote.urls[urls[urls.length - 1]]}`;
+            emoji.name = emote.name;
+          } else if (url.includes("betterttv.com")) {
+            const emote = await bttv.getEmoteByURL(url);
+            emoji.url = `https://cdn.betterttv.net/emote/${emote.id}/3x`;
+            emoji.name = emote.code;
+          }
+
+          const emote = message.guild.emojis.cache.find(
+            (e) => e.name.toLowerCase() === emoji.name.toLowerCase()
+          );
+
+          if (emote) {
+            channel.send(`Emoji "${emoji.name}" already exists`);
+          } else {
+            await message.guild.emojis.create(emoji.url, emoji.name);
+            channel.send(`Emoji "${emoji.name}" has been added`);
+          }
+        } catch (error) {
+          if (error.response) {
+            channel.send("Emote url not found");
+          } else {
+            console.log(error);
+            channel.send(error.message);
+          }
+        }
+      }
+    } else if (subcommand == "remove") {
+      if (!params[0]) {
+        channel.send(
+          "Missing alias parameter, example: ```Format: .emoji remove <name or alias>\nExample .emoji remove NOP```"
+        );
+      } else {
+        const [alias] = params;
+        const emote = message.guild.emojis.cache.find(
+          (emoji) => emoji.name.toLowerCase() === alias.toLowerCase()
+        );
+
+        if (!emote) {
+          channel.send(`Emoji with alias "${alias}" not found`);
+        } else {
+          await emote.delete();
+          channel.send(`Emoji "${emote.name}" has been removed`);
+        }
+      }
+    }
+  } else if (command === "ping") {
     message.reply("Pong! " + message.author.tag);
   } else if (command === "bw" || command === "bandwidth") {
     const response = await vultr.get(
