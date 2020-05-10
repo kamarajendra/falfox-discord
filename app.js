@@ -30,6 +30,8 @@ client.on("ready", () => {
     .catch(console.error);
   playsound.getPlaysounds().then((sounds) => {
     playsounds = sounds;
+    console.log(playsounds.slice(0, 5));
+    console.log("Playsounds successfully loaded");
   });
 });
 
