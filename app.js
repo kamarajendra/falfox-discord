@@ -160,16 +160,31 @@ client.on("message", async (message) => {
     }
   } else if (command === "playsound" || command === "ps") {
     const [sound] = args;
-    const url = `https://admiralbullbot.github.io/playsounds/files/bulldog/${sound}.ogg`;
-    const connection = message.guild.voice && message.guild.voice.connection;
 
-    if (connection) {
-      connection.play(url, {
-        volume: 0.7,
-      });
+    if (!sound) {
+      const embed = new Discord.MessageEmbed()
+        .setDescription(
+          "Playing sounds from https://chatbot.admiralbulldog.live/playsounds"
+        )
+        .setTitle(".playsound")
+        .addField("alias", ".ps")
+        .addField(
+          "How to use",
+          `format: \`.playsound <name>\`. Example: \`\`\`.playsound add dingdong2\`\`\``
+        );
+      channel.send(embed);
     } else {
-      const voiceConnection = await message.member.voice.channel.join();
-      voiceConnection.play(url);
+      const url = `https://admiralbullbot.github.io/playsounds/files/bulldog/${sound}.ogg`;
+      const connection = message.guild.voice && message.guild.voice.connection;
+
+      if (connection) {
+        connection.play(url, {
+          volume: 0.7,
+        });
+      } else {
+        const voiceConnection = await message.member.voice.channel.join();
+        voiceConnection.play(url);
+      }
     }
   } else if (command === "trump") {
     const url =
