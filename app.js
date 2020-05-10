@@ -5,6 +5,7 @@ const Discord = require("discord.js");
 const client = new Discord.Client();
 const frankerfacez = require("./lib/frankerfacez");
 const bttv = require("./lib/betterttv");
+const twitchemotes = require("./lib/twitchemotes");
 
 const vultrAPIKey = process.env.VULTR_APIKEY;
 
@@ -38,7 +39,7 @@ client.on("message", async (message) => {
 
     if (!subcommand) {
       const embed = new Discord.MessageEmbed()
-        .setDescription("Add or remove emoji from FrankerFaceZ or BetterTTV")
+        .setDescription("Add or remove emoji from TwithEmotes, FrankerFaceZ or BetterTTV")
         .setTitle(".emoji")
         .addField(
           "How to use",
@@ -66,6 +67,10 @@ client.on("message", async (message) => {
           } else if (url.includes("betterttv.com")) {
             const emote = await bttv.getEmoteByURL(url);
             emoji.url = `https://cdn.betterttv.net/emote/${emote.id}/3x`;
+            emoji.name = emote.code;
+          } else if (url.includes("twitchemotes.com")) {
+            const emote = await twitchemotes.getEmoteByURL(url);
+            emoji.url = `https://static-cdn.jtvnw.net/emoticons/v1/${emote.id}/3x`;
             emoji.name = emote.code;
           }
 
