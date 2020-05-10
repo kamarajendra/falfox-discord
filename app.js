@@ -153,7 +153,9 @@ client.on("message", async (message) => {
       }
     }
   } else if (command === "bye") {
-    const connection = message.guild.voice && message.guild.voice.connection;
+    const connection = client.voiceConnections.find(
+      (val) => val.channel.guild.id === message.guild.id
+    );
 
     if (connection) {
       connection.disconnect();
