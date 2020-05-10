@@ -6,6 +6,7 @@ const client = new Discord.Client();
 const frankerfacez = require("./lib/frankerfacez");
 const bttv = require("./lib/betterttv");
 const twitchemotes = require("./lib/twitchemotes");
+const playsound = require("./lib/playsounds");
 
 const vultrAPIKey = process.env.VULTR_APIKEY;
 
@@ -17,6 +18,8 @@ const vultr = axios.create({
 
 const prefix = ".";
 
+let playsounds;
+
 client.on("ready", () => {
   console.log(`Logged in as ${client.user.tag}!`);
   client.user
@@ -25,6 +28,9 @@ client.on("ready", () => {
       console.log(`Activity set to ${presence.activities[0].name}`)
     )
     .catch(console.error);
+  playsound.getPlaysounds().then((sounds) => {
+    playsounds = sounds;
+  });
 });
 
 client.on("message", async (message) => {
@@ -174,16 +180,21 @@ client.on("message", async (message) => {
         );
       channel.send(embed);
     } else {
-      const url = `https://admiralbullbot.github.io/playsounds/files/bulldog/${sound}.ogg`;
-      const connection = message.guild.voice && message.guild.voice.connection;
+      const url = playsounds[sound.toLowerCase()];
+      if (url) {
+        const connection =
+          message.guild.voice && message.guild.voice.connection;
 
-      if (connection) {
-        connection.play(url, {
-          volume: 0.7,
-        });
+        if (connection) {
+          connection.play(url, {
+            volume: 0.7,
+          });
+        } else {
+          const voiceConnection = await message.member.voice.channel.join();
+          voiceConnection.play(url);
+        }
       } else {
-        const voiceConnection = await message.member.voice.channel.join();
-        voiceConnection.play(url);
+        channel.send("Playsound not found");
       }
     }
   } else if (command === "trump") {
