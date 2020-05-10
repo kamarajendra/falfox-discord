@@ -39,7 +39,9 @@ client.on("message", async (message) => {
 
     if (!subcommand) {
       const embed = new Discord.MessageEmbed()
-        .setDescription("Add or remove emoji from TwithEmotes, FrankerFaceZ or BetterTTV")
+        .setDescription(
+          "Add or remove emoji from TwithEmotes, FrankerFaceZ or BetterTTV"
+        )
         .setTitle(".emoji")
         .addField(
           "How to use",
@@ -70,9 +72,11 @@ client.on("message", async (message) => {
             emoji.name = emote.code;
           } else if (url.includes("twitchemotes.com")) {
             const emote = await twitchemotes.getEmoteByURL(url);
-            emoji.url = `https://static-cdn.jtvnw.net/emoticons/v1/${emote.id}/3x`;
+            emoji.url = emote.url;
             emoji.name = emote.code;
           }
+
+          console.log(emoji);
 
           const emote = message.guild.emojis.cache.find(
             (e) => e.name.toLowerCase() === emoji.name.toLowerCase()
