@@ -76,8 +76,6 @@ client.on("message", async (message) => {
             emoji.name = emote.code;
           }
 
-          console.log(emoji);
-
           const emote = message.guild.emojis.cache.find(
             (e) => e.name.toLowerCase() === emoji.name.toLowerCase()
           );
