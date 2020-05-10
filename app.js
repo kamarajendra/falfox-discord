@@ -158,7 +158,7 @@ client.on("message", async (message) => {
     if (connection) {
       connection.disconnect();
     }
-  } else if (command === "playsound") {
+  } else if (command === "playsound" || command === "ps") {
     const [sound] = args;
     const url = `https://admiralbullbot.github.io/playsounds/files/bulldog/${sound}.ogg`;
     const connection = message.guild.voice && message.guild.voice.connection;
