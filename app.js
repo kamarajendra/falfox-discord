@@ -81,6 +81,8 @@ client.on("message", async (message) => {
             const emote = await twitchemotes.getEmoteByURL(url);
             emoji.url = emote.url;
             emoji.name = emote.code;
+          } else {
+            return channel.send("URL not supported");
           }
 
           const emote = message.guild.emojis.cache.find(
