@@ -1,5 +1,5 @@
 require("dotenv").config();
-const {exec} = require('child_process')
+const { exec } = require("child_process");
 const byteSize = require("byte-size");
 const axios = require("axios");
 const Discord = require("discord.js");
@@ -34,14 +34,15 @@ client.on("ready", () => {
     console.log("Playsounds successfully loaded");
   });
 
-  const owner = await client.users.fetch("210939885002031105")
-  exec("git log -1 --pretty=%B", (err, stdout, stderr) => {
-    if (err) return
-    
-    const lastCommit = stdout.replace(/\n/g, "")
-    const message = `[Online] ${lastCommit}`
-    owner.send(message)
-  })
+  client.users.fetch("210939885002031105").then((owner) => {
+    exec("git log -1 --pretty=%B", (err, stdout, stderr) => {
+      if (err) return;
+
+      const lastCommit = stdout.replace(/\n/g, "");
+      const message = `[Online] ${lastCommit}`;
+      owner.send(message);
+    });
+  });
 });
 
 client.on("message", async (message) => {
