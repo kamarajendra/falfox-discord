@@ -116,7 +116,7 @@ client.on("message", async (message) => {
             channel.send("Emote url not found");
           } else {
             console.log(error);
-            channel.send(error.message);
+            channel.send("Error processing emote");
           }
         }
       }
@@ -185,7 +185,7 @@ client.on("message", async (message) => {
     }
   } else if (command === "playsound" || command === "ps") {
     const [sound] = args;
-
+    ``;
     if (!sound) {
       const embed = new Discord.MessageEmbed()
         .setColor("#f57534")
