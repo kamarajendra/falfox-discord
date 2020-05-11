@@ -52,7 +52,9 @@ client.on("message", async (message) => {
       .addField(
         ".playsound",
         "Playing sounds from https://chatbot.admiralbulldog.live/playsounds"
-      );
+      )
+      .addField("\u200b", "\u200b")
+      .addField(".bye", "Disconnect FalFox from voice channel");
     channel.send(embed);
   } else if (command === "emoji") {
     const [subcommand, ...params] = args;
