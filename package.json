@@ -4,7 +4,13 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "start": "node app.kks",
     "watch": "nodemon app.js"
+  },
+  "husky": {
+    "hooks": {
+      "post-merge": "npm install"
+    }
   },
   "keywords": [],
   "author": "",
@@ -19,6 +25,7 @@
   },
   "devDependencies": {
     "@prisma/cli": "^2.0.0-beta.4",
+    "husky": "^4.2.5",
     "nodemon": "^2.0.3"
   }
 }
