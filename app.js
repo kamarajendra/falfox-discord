@@ -41,11 +41,25 @@ client.on("message", async (message) => {
   const command = args.shift().toLowerCase();
   const channel = message.channel;
 
-  if (command === "emoji") {
+  if (command === "help") {
+    const embed = new Discord.MessageEmbed()
+      .setColor("#f57534")
+      .setTitle("Command List")
+      .addField(
+        ".emoji",
+        "Add or remove emoji from TwithEmotes, FrankerFaceZ or BetterTTV"
+      )
+      .addField(
+        ".playsound",
+        "Playing sounds from https://chatbot.admiralbulldog.live/playsounds"
+      );
+    channel.send(embed);
+  } else if (command === "emoji") {
     const [subcommand, ...params] = args;
 
     if (!subcommand) {
       const embed = new Discord.MessageEmbed()
+        .setColor("#f57534")
         .setDescription(
           "Add or remove emoji from TwithEmotes, FrankerFaceZ or BetterTTV"
         )
@@ -172,6 +186,7 @@ client.on("message", async (message) => {
 
     if (!sound) {
       const embed = new Discord.MessageEmbed()
+        .setColor("#f57534")
         .setDescription(
           "Playing sounds from https://chatbot.admiralbulldog.live/playsounds"
         )
