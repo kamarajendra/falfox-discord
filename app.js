@@ -152,6 +152,18 @@ client.on("message", async (message) => {
     }
   } else if (command === "ping") {
     message.reply("Pong! " + message.author.tag);
+
+    const url = `https://www.myinstants.com/media/sounds/discord-notification.mp3`;
+    const connection = message.guild.voice && message.guild.voice.connection;
+
+    if (connection) {
+      connection.play(url, {
+        volume: 0.5,
+      });
+    } else {
+      const voiceConnection = await message.member.voice.channel.join();
+      voiceConnection.play(url);
+    }
   } else if (command === "bw" || command === "bandwidth") {
     const response = await vultr.get(
       "https://api.vultr.com/v1/server/bandwidth?SUBID=36667259"
