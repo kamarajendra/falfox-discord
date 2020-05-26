@@ -157,9 +157,7 @@ client.on("message", async (message) => {
     const connection = message.guild.voice && message.guild.voice.connection;
 
     if (connection) {
-      connection.play(url, {
-        volume: 0.5,
-      });
+      connection.play(url);
     } else {
       const voiceConnection = await message.member.voice.channel.join();
       voiceConnection.play(url);
