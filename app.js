@@ -166,19 +166,23 @@ client.on("message", async (message) => {
     }
 
     if (isGuild) {
-      const channelID = message.member.voice.id;
+      const channelID = message.member.voice.channel.id;
 
       if (intervals.has(channelID)) {
         clearInterval(intervals.get(channelID));
       }
 
-      const timeoutInterval = setInterval(() => {
-        client.voice.connections
-          .find((con) => con.channel.id === channelID)
-          .disconnect();
-      }, 15 * 60 * 1000);
+      const idleTimeout = setTimeout(() => {
+        const connection = client.voice.connections.find((con) => {
+          return con.channel.id === channelID;
+        });
 
-      intervals.set(message.member.guild.id, timeoutInterval);
+        if (connection) {
+          connection.disconnect();
+        }
+      }, 10 * 1000);
+
+      intervals.set(message.member.guild.id, idleTimeout);
     }
   } else if (command === "bw" || command === "bandwidth") {
     const response = await vultr.get(
@@ -254,19 +258,23 @@ client.on("message", async (message) => {
         }
 
         if (isGuild) {
-          const channelID = message.member.voice.id;
+          const channelID = message.member.voice.channel.id;
 
           if (intervals.has(channelID)) {
             clearInterval(intervals.get(channelID));
           }
 
-          const timeoutInterval = setInterval(() => {
-            client.voice.connections
-              .find((con) => con.channel.id === channelID)
-              .disconnect();
-          }, 15 * 60 * 1000);
+          const idleTimeout = setTimeout(() => {
+            const connection = client.voice.connections.find((con) => {
+              return con.channel.id === channelID;
+            });
 
-          intervals.set(message.member.guild.id, timeoutInterval);
+            if (connection) {
+              connection.disconnect();
+            }
+          }, 10 * 1000);
+
+          intervals.set(message.member.guild.id, idleTimeout);
         }
       } else {
         channel.send("Playsound not found");
