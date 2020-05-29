@@ -18,6 +18,7 @@ const vultr = axios.create({
 });
 
 const prefix = ".";
+const intervals = new Map();
 
 let playsounds;
 
@@ -48,6 +49,7 @@ client.on("ready", () => {
 client.on("message", async (message) => {
   if (!message.content.startsWith(prefix)) return;
 
+  const isGuild = message.guild;
   const args = message.content.slice(prefix.length).split(" ");
   const command = args.shift().toLowerCase();
   const channel = message.channel;
@@ -162,6 +164,17 @@ client.on("message", async (message) => {
       const voiceConnection = await message.member.voice.channel.join();
       voiceConnection.play(url);
     }
+
+    if (isGuild) {
+      const guildID = message.member.guild.id;
+
+      if (intervals.has(guildID)) {
+        clearInterval(intervals.get(guildID));
+      }
+
+      const timeoutInterval = setInterval(() => {}, 15 * 60 * 1000);
+      intervals.set(message.member.guild.id, timeoutInterval);
+    }
   } else if (command === "bw" || command === "bandwidth") {
     const response = await vultr.get(
       "https://api.vultr.com/v1/server/bandwidth?SUBID=36667259"
@@ -233,6 +246,17 @@ client.on("message", async (message) => {
         } else {
           const voiceConnection = await message.member.voice.channel.join();
           voiceConnection.play(url);
+        }
+
+        if (isGuild) {
+          const guildID = message.member.guild.id;
+
+          if (intervals.has(guildID)) {
+            clearInterval(intervals.get(guildID));
+          }
+
+          const timeoutInterval = setInterval(() => {}, 15 * 60 * 1000);
+          intervals.set(message.member.guild.id, timeoutInterval);
         }
       } else {
         channel.send("Playsound not found");
