@@ -166,13 +166,17 @@ client.on("message", async (message) => {
     }
 
     if (isGuild) {
-      const guildID = message.member.guild.id;
+      const channelID = message.member.voice.channelID;
 
-      if (intervals.has(guildID)) {
-        clearInterval(intervals.get(guildID));
+      if (intervals.has(channelID)) {
+        clearInterval(intervals.get(channelID));
       }
 
-      const timeoutInterval = setInterval(() => {}, 15 * 60 * 1000);
+      const timeoutInterval = setInterval(() => {
+        client.voice.connections
+          .find((con) => con.channel.id === channelID)
+          .disconnect();
+      }, 15 * 60 * 1000);
       intervals.set(message.member.guild.id, timeoutInterval);
     }
   } else if (command === "bw" || command === "bandwidth") {
@@ -249,13 +253,17 @@ client.on("message", async (message) => {
         }
 
         if (isGuild) {
-          const guildID = message.member.guild.id;
+          const channelID = message.member.voice.channelID;
 
-          if (intervals.has(guildID)) {
-            clearInterval(intervals.get(guildID));
+          if (intervals.has(channelID)) {
+            clearInterval(intervals.get(channelID));
           }
 
-          const timeoutInterval = setInterval(() => {}, 15 * 60 * 1000);
+          const timeoutInterval = setInterval(() => {
+            client.voice.connections
+              .find((con) => con.channel.id === channelID)
+              .disconnect();
+          }, 15 * 60 * 1000);
           intervals.set(message.member.guild.id, timeoutInterval);
         }
       } else {
