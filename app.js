@@ -180,7 +180,7 @@ client.on("message", async (message) => {
         if (connection) {
           connection.disconnect();
         }
-      }, 10 * 1000);
+      }, 15 * 60 * 1000);
 
       intervals.set(message.member.guild.id, idleTimeout);
     }
@@ -272,7 +272,7 @@ client.on("message", async (message) => {
             if (connection) {
               connection.disconnect();
             }
-          }, 10 * 1000);
+          }, 15 * 60 * 1000);
 
           intervals.set(message.member.guild.id, idleTimeout);
         }
