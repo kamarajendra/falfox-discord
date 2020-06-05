@@ -294,6 +294,11 @@ client.on("message", async (message) => {
       const voiceConnection = await message.member.voice.channel.join();
       voiceConnection.play(url);
     }
+  } else if (command === "permaban") {
+    const [subcommand] = args;
+    if (subcommand === "all" && message.member.id === "210939885002031105") {
+      channel.send("Processing...");
+    }
   }
 });
 
