@@ -178,9 +178,11 @@ client.on("message", async (message) => {
         });
 
         if (connection) {
-          connection.disconnect();
+          connection.play(playsounds["seeya"]).on("finish", () => {
+            connection.disconnect();
+          });
         }
-      }, 15 * 60 * 1000);
+      }, 10 * 60 * 1000);
 
       intervals.set(message.member.guild.id, idleTimeout);
     }
@@ -224,7 +226,9 @@ client.on("message", async (message) => {
     );
 
     if (connection) {
-      connection.disconnect();
+      connection.play(playsounds["seeya"]).on("finish", () => {
+        connection.disconnect();
+      });
     }
   } else if (command === "playsound" || command === "ps") {
     const [sound] = args;
@@ -270,9 +274,11 @@ client.on("message", async (message) => {
             });
 
             if (connection) {
-              connection.disconnect();
+              connection.play(playsounds["seeya"]).on("finish", () => {
+                connection.disconnect();
+              });
             }
-          }, 15 * 60 * 1000);
+          }, 10 * 60 * 1000);
 
           intervals.set(message.member.guild.id, idleTimeout);
         }
