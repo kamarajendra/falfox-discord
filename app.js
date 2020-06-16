@@ -22,6 +22,12 @@ const intervals = new Map();
 
 let playsounds;
 
+const updatePlaysounds = async () => {
+  const sounds = await playsound.getPlaysounds();
+  playsounds = sounds;
+  console.log("Playsounds successfully updated");
+};
+
 client.on("ready", () => {
   console.log(`Logged in as ${client.user.tag}!`);
   client.user
@@ -30,12 +36,9 @@ client.on("ready", () => {
       console.log(`Activity set to ${presence.activities[0].name}`)
     )
     .catch(console.error);
-  setInterval(() => {
-    playsound.getPlaysounds().then((sounds) => {
-      playsounds = sounds;
-      console.log("Playsounds successfully updated");
-    });
-  }, 15 * 60 * 10000);
+
+  updatePlaysounds();
+  setInterval(() => updatePlaysounds, 15 * 60 * 10000);
 
   client.users.fetch("210939885002031105").then((owner) => {
     exec("git log -1 --pretty=%B", (err, stdout, stderr) => {
