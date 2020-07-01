@@ -2,6 +2,7 @@ require("dotenv").config();
 const { exec } = require("child_process");
 const byteSize = require("byte-size");
 const axios = require("axios");
+const https = require("https");
 const Discord = require("discord.js");
 const client = new Discord.Client();
 const frankerfacez = require("./lib/frankerfacez");
@@ -15,6 +16,7 @@ const vultr = axios.create({
   headers: {
     "API-Key": vultrAPIKey,
   },
+  httpsAgent: new https.Agent({ rejectUnauthorized: false }),
 });
 
 const prefix = ".";
@@ -50,6 +52,22 @@ client.on("ready", () => {
     });
   });
 });
+
+const countBytes = ([date, bytes], acc) => {
+  const currentMonth = new Date().getMonth();
+
+  const splitted = date.split("-");
+  const byteMonth = parseInt(splitted[1] || -1);
+
+  if (!byteMonth) {
+    console.error("byte Month not found, it shouldn't be possible");
+    return acc;
+  }
+
+  if (byteMonth !== currentMonth + 1) return acc;
+
+  return acc + parseInt(bytes);
+};
 
 client.on("message", async (message) => {
   if (!message.content.startsWith(prefix)) return;
@@ -195,13 +213,16 @@ client.on("message", async (message) => {
     const response = await vultr.get(
       "https://api.vultr.com/v1/server/bandwidth?SUBID=36667259"
     );
+
     const { incoming_bytes, outgoing_bytes } = response.data;
-    const incoming = incoming_bytes.reduce((acc, [date, bytes]) => {
-      return acc + parseInt(bytes);
-    }, 0);
-    const outgoing = outgoing_bytes.reduce((acc, [date, bytes]) => {
-      return acc + parseInt(bytes);
-    }, 0);
+    const incoming = incoming_bytes.reduce(
+      (acc, incomingBytes) => countBytes(incomingBytes, acc),
+      0
+    );
+    const outgoing = outgoing_bytes.reduce(
+      (acc, outgoingBytes) => countBytes(outgoingBytes, acc),
+      0
+    );
 
     const usage = Math.max(incoming, outgoing);
 
