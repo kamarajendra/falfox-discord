@@ -4,6 +4,7 @@ const byteSize = require("byte-size");
 const axios = require("axios");
 const https = require("https");
 const Discord = require("discord.js");
+const { format, isPast } = require("date-fns");
 const client = new Discord.Client();
 const frankerfacez = require("./lib/frankerfacez");
 const bttv = require("./lib/betterttv");
@@ -89,6 +90,10 @@ client.on("message", async (message) => {
         ".playsound",
         "Playing sounds from https://chatbot.admiralbulldog.live/playsounds"
       )
+      .addField(
+        ".epicstore",
+        "Show Free Games from Epic Games Store"
+      )
       .addField("\u200b", "\u200b")
       .addField(".bye", "Disconnect FalFox from voice channel");
     channel.send(embed);
@@ -140,6 +145,8 @@ client.on("message", async (message) => {
           const emote = message.guild.emojis.cache.find(
             (e) => e.name.toLowerCase() === emoji.name.toLowerCase()
           );
+          message.guild.emojis.cache.size;
+          message.guild.channels.cache.size;
 
           if (emote) {
             channel.send(`Emoji "${emoji.name}" already exists`);
@@ -330,6 +337,53 @@ client.on("message", async (message) => {
     const [subcommand] = args;
     if (subcommand === "all" && message.member.id === "210939885002031105") {
       channel.send("Processing...");
+    }
+  } else if (command === "epicstore") {
+    try {
+      const { data } = await axios.default.get(
+        "https://store-site-backend-static.ak.epicgames.com/freeGamesPromotions?locale=en-US&country=ID&allowCountries=ID"
+      );
+
+      if (data.data.Catalog.searchStore.elements) {
+        for (const game of data.data.Catalog.searchStore.elements) {
+          const offers = [
+            ...game.promotions.promotionalOffers,
+            ...game.promotions.upcomingPromotionalOffers,
+          ].flat();
+          const freeOffer = offers.find(
+            (off) =>
+              off.promotionalOffers[0].discountSetting.discountPercentage === 0
+          );
+
+          if (!freeOffer) continue;
+
+          const offer = freeOffer.promotionalOffers[0];
+
+          const startDate = new Date(offer.startDate);
+
+          const start = isPast(startDate) ? "NOW" : format(startDate, "MMM d");
+
+          const embed = new Discord.MessageEmbed()
+            .setColor("#f57534")
+            .setTitle(game.title)
+            .setURL(
+              `https://www.epicgames.com/store/en-US/product/${game.productSlug}`
+            )
+            .setDescription(game.description)
+            .setImage(game.keyImages[0].url)
+            .addField(
+              `Free ${start} - ${format(new Date(offer.endDate), "MMM d")}`,
+              "\u200b"
+            );
+
+          channel.send(embed);
+        }
+      } else {
+        channel.send("Tidak ada promo apapun");
+      }
+    } catch (error) {
+      console.log(error);
+      channel.send("Gagal mengambil data dari Epic Store");
     }
   }
 });
